@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
     public ExecutorService threadPool = Executors.newFixedThreadPool(64);
-    private List<String> validPaths = new ArrayList<>();
+    private final List<String> validPaths;
 
     public Server(List<String > validPaths) {
         this.validPaths = validPaths;
