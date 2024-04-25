@@ -34,10 +34,12 @@ public class Request {
 
     public String getQueryParam(String title) {
         final var pathArray = path.split("\\?");
-        final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
-        for (int i = 0; i < queryParamList.size(); i++) {
-            if (queryParamList.get(i).getName().equals(title)) {
-                return queryParamList.get(i).getName() + queryParamList.get(i).getValue();
+        if (pathArray.length == 2) {
+            final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
+            for (int i = 0; i < queryParamList.size(); i++) {
+                if (queryParamList.get(i).getName().equals(title)) {
+                    return queryParamList.get(i).getName() + queryParamList.get(i).getValue();
+                }
             }
         }
         return null;
@@ -45,11 +47,14 @@ public class Request {
 
     public String getQueryParams() {
         final var pathArray = path.split("\\?");
-        final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
-        final var stringBuilder = new StringBuilder();
-        for (int i = 0; i < queryParamList.size(); i++) {
-            stringBuilder.append(queryParamList.get(i));
+        if (pathArray.length == 2) {
+            final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
+            final var stringBuilder = new StringBuilder();
+            for (int i = 0; i < queryParamList.size(); i++) {
+                stringBuilder.append(queryParamList.get(i));
+            }
+            return stringBuilder.toString();
         }
-        return stringBuilder.toString();
+        return null;
     }
 }
