@@ -19,8 +19,8 @@ import java.util.concurrent.Executors;
 
 public class Server {
     public ExecutorService threadPool = Executors.newFixedThreadPool(64);
-    private List<String> validPaths = new ArrayList<>();
-    private Map<String, Map<String, Handler>> methodMap = new HashMap<>();
+    private final List<String> validPaths;
+    private Map<String, HashMap<String, Handler>> methodMap = new HashMap<>();
 
     public Server(List<String > validPaths) {
         this.validPaths = validPaths;
@@ -47,7 +47,8 @@ public class Server {
                 return;
             }
         }
-        methodMap.put(method, (Map<String, Handler>) new HashMap<String, Handler>().put(path, handler));
+        methodMap.put(method, new HashMap<>());
+        methodMap.get(method).put(path, handler);
     }
 
     private void serverAccept(ServerSocket serverSocket) throws ExecutionException, InterruptedException {
