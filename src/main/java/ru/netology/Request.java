@@ -8,6 +8,7 @@ public class Request {
     private String method;
     private String path;
     private String body;
+    private String mimeType;
 
     public Request(String method, String path) {
         this.method = method;
@@ -18,6 +19,10 @@ public class Request {
         this.method = method;
         this.path = title;
         this.body = body;
+    }
+
+    public void addMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public String getMethod() {
@@ -34,10 +39,12 @@ public class Request {
 
     public String getQueryParam(String title) {
         final var pathArray = path.split("\\?");
-        final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
-        for (int i = 0; i < queryParamList.size(); i++) {
-            if (queryParamList.get(i).getName().equals(title)) {
-                return queryParamList.get(i).getName() + ": " + queryParamList.get(i).getValue();
+        if (pathArray.length == 2) {
+            final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
+            for (int i = 0; i < queryParamList.size(); i++) {
+                if (queryParamList.get(i).getName().equals(title)) {
+                    return queryParamList.get(i).getName() + ": " + queryParamList.get(i).getValue();
+                }
             }
         }
         return null;
@@ -45,29 +52,38 @@ public class Request {
 
     public String getQueryParams() {
         final var pathArray = path.split("\\?");
-        final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
-        final var stringBuilder = new StringBuilder();
-        for (int i = 0; i < queryParamList.size(); i++) {
-            stringBuilder.append(queryParamList.get(i).getName() + ": " + queryParamList.get(i).getValue());
+        if (pathArray.length == 2) {
+            final var queryParamList = URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8);
+            final var stringBuilder = new StringBuilder();
+            for (int i = 0; i < queryParamList.size(); i++) {
+                stringBuilder.append(queryParamList.get(i).getName() + ": " + queryParamList.get(i).getValue());
+            }
+            return stringBuilder.toString();
         }
-        return stringBuilder.toString();
+        return null;
     }
 
     public String getPostParam(String name) {
-        final var bodyParamList = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
-        for (int i = 0; i < bodyParamList.size(); i++) {
-            if (bodyParamList.get(i).getName().equals(name)) {
-                return bodyParamList.get(i).getName() + ": " + bodyParamList.get(i).getValue();
+        if (mimeType.equals("application/x-www-form-urlencoded")) {
+            final var bodyParamList = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
+            for (int i = 0; i < bodyParamList.size(); i++) {
+                if (bodyParamList.get(i).getName().equals(name)) {
+                    return bodyParamList.get(i).getName() + ": " + bodyParamList.get(i).getValue();
+                }
             }
         }
+        return null;
     }
 
     public String getPostParams() {
-        final var bodyParamList = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
-        final var stringBuilder = new StringBuilder();
-        for (int i = 0; i < bodyParamList.size(); i++) {
-            stringBuilder.append(bodyParamList.get(i).getName() + ": " + bodyParamList.get(i).getValue());
+        if (mimeType.equals("application/x-www-form-urlencoded")) {
+            final var bodyParamList = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
+            final var stringBuilder = new StringBuilder();
+            for (int i = 0; i < bodyParamList.size(); i++) {
+                stringBuilder.append(bodyParamList.get(i).getName() + ": " + bodyParamList.get(i).getValue());
+            }
+            return stringBuilder.toString();
         }
-        return stringBuilder.toString();
+        return null;
     }
 }

@@ -112,6 +112,7 @@ public class Server {
 
                             final var filePath = Path.of(".", "public", pathWithQuery);
                             final var mimeType = Files.probeContentType(filePath);
+                            request.addMimeType(mimeType);
 
                             // special case for classic
                             if (path.equals("/classic.html")) {
