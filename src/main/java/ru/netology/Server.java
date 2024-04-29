@@ -97,8 +97,6 @@ public class Server {
                                 request = new Request(method, pathWithQuery);
                             }
 
-                            System.out.println(request.getQueryParams());
-
                             if (!validPaths.contains(pathWithQuery)) {
                                 out.write((
                                         "HTTP/1.1 404 Not Found\r\n" +
@@ -112,7 +110,13 @@ public class Server {
 
                             final var filePath = Path.of(".", "public", pathWithQuery);
                             final var mimeType = Files.probeContentType(filePath);
-                            request.addMimeType(mimeType);
+
+                            if (request.getMethod().equals("POST")) {
+                                if (headers.contains("Content-Type: application/x-www-form-urlencoded")) {
+                                    System.out.println("Тело запроса");
+                                    System.out.println(request.getPostParams());
+                                }
+                            }
 
                             // special case for classic
                             if (path.equals("/classic.html")) {

@@ -8,7 +8,6 @@ public class Request {
     private String method;
     private String path;
     private String body;
-    private String mimeType;
 
     public Request(String method, String path) {
         this.method = method;
@@ -19,10 +18,6 @@ public class Request {
         this.method = method;
         this.path = title;
         this.body = body;
-    }
-
-    public void addMimeType(String mimeType) {
-        this.mimeType = mimeType;
     }
 
     public String getMethod() {
@@ -64,26 +59,23 @@ public class Request {
     }
 
     public String getPostParam(String name) {
-        if (mimeType.equals("application/x-www-form-urlencoded")) {
-            final var bodyParamList = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
-            for (int i = 0; i < bodyParamList.size(); i++) {
-                if (bodyParamList.get(i).getName().equals(name)) {
-                    return bodyParamList.get(i).getName() + ": " + bodyParamList.get(i).getValue();
-                }
+        final var bodyParamArray = body.split("&");
+        for (int i = 0; i < bodyParamArray.length; i++) {
+            final var paramNameValue = bodyParamArray[i].split("=");
+            if (paramNameValue[0].equals("name")) {
+                return paramNameValue[0] + ": " + paramNameValue[1];
             }
         }
         return null;
     }
 
     public String getPostParams() {
-        if (mimeType.equals("application/x-www-form-urlencoded")) {
-            final var bodyParamList = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
-            final var stringBuilder = new StringBuilder();
-            for (int i = 0; i < bodyParamList.size(); i++) {
-                stringBuilder.append(bodyParamList.get(i).getName() + ": " + bodyParamList.get(i).getValue());
-            }
-            return stringBuilder.toString();
+        final var bodyParamArray = body.split("&");
+        final var stringBuilder = new StringBuilder();
+        for (int i = 0; i < bodyParamArray.length; i++) {
+            final var paramNameValue = bodyParamArray[i].split("=");
+            stringBuilder.append(paramNameValue[0] + ": " + paramNameValue[1] + "\n");
         }
-        return null;
+        return stringBuilder.toString();
     }
 }
