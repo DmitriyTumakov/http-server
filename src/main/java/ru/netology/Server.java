@@ -22,6 +22,7 @@ public class Server {
     private final List<String> validPaths;
     private Map<String, HashMap<String, Handler>> methodMap = new HashMap<>();
 
+
     public Server(List<String > validPaths) {
         this.validPaths = validPaths;
     }
