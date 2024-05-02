@@ -1,7 +1,10 @@
 package ru.netology;
 
+import org.apache.hc.core5.net.URLEncodedUtils;
+
 import java.io.*;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -92,7 +95,9 @@ public class Server {
 
                             Request request = null;
                             if (!method.equals("GET")) {
-                                request = new Request(method, pathWithQuery, body);
+                                request = new Request(method, pathWithQuery, body, URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8));
+                            } else if (pathArray.length == 2) {
+                                request = new Request(method, pathWithQuery, URLEncodedUtils.parse(pathArray[1], StandardCharsets.UTF_8));
                             } else {
                                 request = new Request(method, pathWithQuery);
                             }
